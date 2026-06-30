@@ -1,0 +1,83 @@
+import UserModel from "./user.model.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import {sendMail} from "../utils/mail.js";
+import {otpTemplate} from "../utils/otp.template.js";
+import {generateOTP} from "../utils/generate.otp.js";
+
+export const createUser =async(req,res)=>{
+    try{
+const data=req.body;
+console.log(data);
+const user=new UserModel(data);
+await user.save();
+res.json(user);
+
+// res.json({message:"Request recive"})
+    }catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
+
+
+export const sendEmail =async(req,res)=>{
+    try{  
+const {email}=req.body;
+const OTP=generateOTP();
+const isEmail=await UserModel.findOne({email});
+if(isEmail)
+    return res.status(400).json({message:"Already rsgistersd !"});
+
+
+        await sendMail(email,"OTP For Signup",otpTemplate(OTP))
+
+        res.json(
+            {message:"Email sent successfully",
+            otp : OTP,
+            success:true
+            }
+        );
+    }catch(err){
+        console.log("controller err",err);
+        res.status(500).json({message:"err.message"});
+    }
+}
+
+
+
+
+const createToken=async(user)=>{
+    const payload ={
+        id:user._id,
+        fullname:user.fullname,
+        email:user.email,
+        role:user.role
+    }
+
+    const token= await jwt.sign(payload,process.env.AUTH_SECRET,{expiresIn:"7d"});
+    return token;
+}
+export const login=async(req,res)=>{
+    try{
+const {email,password}=req.body;
+const user=await UserModel.findOne({email});
+if(!user)
+    return res.status(404).json({message:"user not define"});
+ const isLoged= await bcrypt.compare(password,user.password);
+ if(!isLoged)
+    return  res.status(404).json({message:"incorrect password"});
+
+ const token=await createToken(user);
+ res.cookie("authToken",token,{
+    maxAge:86400000,
+    domain:process.env.ENVIROMENT=== "DEV"?"localhost":process.env.DOMAIN,
+    secure: process.env.ENVIROMENT=== "DEV"?false:true,
+    httpOnly:true
+ });
+ res.json({message:"login successfull",role:user.role});
+
+console.log(user)
+    }catch(err){
+        res.status(500).json({message:err.message});
+    }
+}
