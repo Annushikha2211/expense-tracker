@@ -5,7 +5,7 @@
  import {useState} from "react";
  import {toast, ToastContainer} from "react-toastify";
  import "react-toastify/dist/ReactToastify.css"; 
-import axios from "axios";
+import http from "../../../utils/http";
 import {useNavigate} from "react-router-dom"
 
  const {Item}=Form;
@@ -14,7 +14,7 @@ import {useNavigate} from "react-router-dom"
 
     const navigate = useNavigate();
 
-    axios.defaults.baseURL= import.meta.env.VITE_BASE_URL
+    
 
     const {loginForm} = Form.useForm();
 
@@ -25,7 +25,7 @@ import {useNavigate} from "react-router-dom"
     const onFinish=async(values)=>{
     try{
          setLoading(true);
-const{data}=await axios.post("/api/user/login",values);
+const{data}=await http.post("/api/user/login",values);
 const {role}=data;
 
 if(role=="admin")

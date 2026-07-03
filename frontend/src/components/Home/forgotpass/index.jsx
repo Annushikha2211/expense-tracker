@@ -1,44 +1,95 @@
 import {Card,Form,Input,Button} from "antd";
  import {LockOutlined, UserOutlined} from "@ant-design/icons";
- import {Link} from "react-router-dom";
+ import {Link, useSearchParams} from "react-router-dom";
  import oneImg from "./one.png";
  import {useState} from "react";
  import {toast, ToastContainer} from "react-toastify";
  import "react-toastify/dist/ReactToastify.css"; 
-import axios from "axios";
+
+import http from "../../../utils/http";
+
 import {useNavigate} from "react-router-dom"
+import {useEffect} from "react"
+
 
  const {Item}=Form;
 
  const ForgotPassword=()=>{
 
     const navigate = useNavigate();
+    const[params]=useSearchParams();
 
-    axios.defaults.baseURL= import.meta.env.VITE_BASE_URL
+
+    
 
     const {forgotForm} = Form.useForm();
+    const {rePasswordForm} = Form.useForm();
 
     const [loading,setLoading]=useState(false);
-    const [token,setTokrn]=useState(null);
-     
+    const [token,setToken]=useState(null);
+    useEffect(()=>{
+        const tok=params.get("token");
+        if(tok){
+            checkToken(tok);
+        }else{
+            setToken(null);
+        }
+        
+    },[params]
+    
+    )
+
+
+     const checkToken=async(tok)=>{
+        try{
+            await http.post("/api/user/verify-token",{},{
+                headers:{
+                    Authorization : `Bearer ${tok}`
+                }
+            });
+
+            setToken(tok);
+
+        }catch(err){
+            setToken(null);
+
+        }
+     }
 
 
     const onFinish=async(values)=>{
     try{
          setLoading(true);
-const{data}=await axios.post("/api/user/login",values);
-const {role}=data;
-
-if(role=="admin")
-    return toast.success("Admin try to login");
-
-if(role=="user")
-    return navigate("/app/user");
+await http.post("/api/user/forgot-password",values);
+toast.success("Please Check your Email to Forgot Password");
 
 
-console.log(data);
-toast.success("Login Successfull");
 
+    }catch(err){
+toast.error(err.response?err.response.data.message:err.message);
+    
+    }finally{
+        setLoading(false);
+    }
+}
+
+const onChangePassword =async(values)=>{
+    try{
+        if(values.password !== values.rePassword)
+            return toast.warning("Password & re password do not match")
+         setLoading(true);
+await http.put("/api/user/change-password",values,
+    {
+                headers:{
+                    Authorization : `Bearer ${params.get("token")}`
+                }
+            }
+);
+
+toast.success("Password updated successfully,pleasw wait...");
+setTimeout(()=>{
+    navigate("/")
+},3000)
 
     }catch(err){
 toast.error(err.response?err.response.data.message:err.message);
@@ -64,11 +115,67 @@ toast.error(err.response?err.response.data.message:err.message);
    <div className="w-full md:w-1/2 flex item-center justify p-2 md:p-6 bg-white  mt-26 ">
      <Card className="w-full max-w-sm shadow-xl max-h-fit ">
             <h2 className="font-bold text-[#869ECA] text-2xl text-center mb-6">
-                Forgot Password
+                {
+                    token?
+                    "Change Password"
+                    :
+                    "Forgot Password"
+                }
             </h2>
 
 
-            <Form
+{
+    token ?
+
+    <Form
+             name="login form"
+            layout="vertical"
+            onFinish={onChangePassword}
+            form={rePasswordForm}
+            >
+<Item 
+name="password"
+label="Password"
+rules={[{required:true}]}
+>
+    <Input.Password
+    prefix ={<LockOutlined/>}
+    placeholder="Enter your Password"
+    />
+</Item>
+   
+   <Item 
+name="rePassword"
+label="Re Enter Password"
+rules={[{required:true}]}
+>
+    <Input.Password
+    prefix ={<LockOutlined/>}
+    placeholder="Enter your Password"
+    />
+</Item>
+
+
+
+
+<Item>
+
+    <Button
+
+        type="text"
+        htmlType="submit"
+        // className="bg-[#869eca] text-white font-bold"
+        block
+        style={{ backgroundColor:"#869eca",color:"white",fontWeight:"bold" }}
+loading={loading}
+        >
+            Change Password
+    </Button>
+</Item>
+
+            </Form>
+            :
+             <Form
              name="login form"
             layout="vertical"
             onFinish={onFinish}
@@ -81,7 +188,7 @@ rules={[{required:true}]}
 >
     <Input
     prefix ={<UserOutlined/>}
-    placeholder="Enter your Username"
+    placeholder="Enter your Email"
     />
 </Item>
 
@@ -103,6 +210,10 @@ loading={loading}
 </Item>
 
             </Form>
+}
+           
+
+            
 
             <div className="flex items-center justify-between">
 

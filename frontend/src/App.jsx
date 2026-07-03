@@ -5,6 +5,8 @@ import {BrowserRouter,Routes,Route} from "react-router-dom";
 import PageNotFound from "./components/pagenotfound"
 import Userlayout from "./components/user/userlayout";
 import ForgotPassword from "./components/Home/forgotpass";
+import Dashboard from "./components/user/dashboard";
+import Report from "./components/user/report";
 
 const App =()=>{
 
@@ -15,7 +17,10 @@ const App =()=>{
     <Route path="/" element={<Login/>}/>
     <Route path="/signup" element={<Signup/>}/>
     <Route path="/forgot-password" element={<ForgotPassword/>}/>
-    <Route path="/app/user" element={<Userlayout/>} ></Route>
+    <Route path="/app/user" element={<Userlayout/>} >
+    <Route path="dashboard" element={<Dashboard/>} />   
+    <Route path="report" element={<Report/>} />    
+    </Route>
     <Route path="/*" element={<PageNotFound/>}/>
     
    </Routes>

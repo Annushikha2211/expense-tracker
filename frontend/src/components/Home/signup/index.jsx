@@ -2,13 +2,13 @@ import {Card,Form,Input,Button} from "antd";
  import {LockOutlined, PhoneOutlined, UserOutlined} from "@ant-design/icons";
  import {Link} from "react-router-dom";
 import HomeLayout from "../../../Homelayout";
-import axios from "axios"
+import http from "../../../utils/http";
 import oneImg from "./one.png";
 import {useState} from "react";
 import {toast, ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css"; 
 
-axios.defaults.baseURL= import.meta.env.VITE_BASE_URL
+
 
  const {Item}=Form;
 
@@ -22,7 +22,7 @@ const [loading,setLoading]=useState(false);
 const onFinish=async(values)=>{
     try{
          setLoading(true);
-const{data}=await axios.post("/api/user/send-mail",values);
+const{data}=await http.post("/api/user/send-mail",values);
 console.log("API RESPONSE:",data)
 setOtp(data.otp);
 setFormData(values);
@@ -45,7 +45,7 @@ const onSignup=async(values)=>{
  if (Number(values.otp)!==Number(otp))
     return toast.error("OTP not match");
 
-await axios.post("/api/user/signup",formData);
+await http.post("/api/user/signup",formData);
 setOtp(null);
 setFormData(null);
 // signupForm.resetFields();

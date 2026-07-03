@@ -1,9 +1,13 @@
   import {Image,Button,Layout,Menu} from "antd";
+  import logo from "./one.png";
   import {AppstoreAddOutlined,BarChartOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons";
   const {Sider,Header,Content,Footer} = Layout;
   import { useState } from "react";
-  import { useNavigate } from "react-router-dom";
-  
+  import { useNavigate ,Outlet,Navigate} from "react-router-dom";
+  import useSWR from "swr";
+import fetcher from "../../../utils/fetcher";
+import Loader from "../../shared/loader";
+
 
   const items=[
 
@@ -32,10 +36,24 @@
 
     }
 
+    const{data:session,error,isLoading } = useSWR(
+        "/api/user/session",
+        fetcher
+    )
+
+   if(isLoading)
+    return <Loader  />
+    
+   if(!session && session?.role !== "user")
+    return <Navigate to="/"/>
+
+if(error)
+    return <Navigate to="/"/>
+
 
     const siderStyle={
         overflow:'auto',
-        height:'100vh',
+      height:'100vh',
         position:'sticky',
         insetInlinerStart:'0',
         top:'0',
@@ -66,7 +84,7 @@
 <div className=" flex item-center justify-center my-4">
 
     <Image
-src="/one.png"
+src={logo}
 width={60}
 height={60}
 alt="logo"
@@ -93,6 +111,11 @@ icon={<MenuOutlined/>}
 icon={<LogoutOutlined/>}
 />
     </Header>
+    <Content>
+        <Outlet />
+
+    {/* <h1>hjguygbhugy</h1> */}
+    </Content>
 </Layout>
     </Layout>
  )
