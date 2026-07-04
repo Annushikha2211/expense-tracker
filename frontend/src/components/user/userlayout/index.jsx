@@ -3,10 +3,13 @@
   import {AppstoreAddOutlined,BarChartOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons";
   const {Sider,Header,Content,Footer} = Layout;
   import { useState } from "react";
-  import { useNavigate ,Outlet,Navigate} from "react-router-dom";
+  import { useNavigate,useLocation ,Outlet,Navigate} from "react-router-dom";
+  import { toast } from "react-toastify";
   import useSWR from "swr";
 import fetcher from "../../../utils/fetcher";
 import Loader from "../../shared/loader";
+import http from "../../../utils/http";
+
 
 
   const items=[
@@ -28,27 +31,17 @@ import Loader from "../../shared/loader";
   const Userlayout=()=>{
 
     const navigate=useNavigate();
+    const {pathname} =useLocation();
 
     const [open,setOpen] = useState(false);
+    const [loading,setLoading] = useState(false);
 
     const handleNavigate=(menu)=>{
         navigate(menu.key);
 
     }
 
-    const{data:session,error,isLoading } = useSWR(
-        "/api/user/session",
-        fetcher
-    )
-
-   if(isLoading)
-    return <Loader  />
-    
-   if(!session && session?.role !== "user")
-    return <Navigate to="/"/>
-
-if(error)
-    return <Navigate to="/"/>
+   
 
 
     const siderStyle={
@@ -77,6 +70,21 @@ if(error)
         
     };
 
+
+const logout=async()=>{
+    try{
+        setLoading(true);
+await http.get("/api/user/logout");
+nevigate("/")
+setLoading(false);
+    }catch(err){
+        setLoading(false);
+        toast.error(err.response?err.response.data.message:err.message)
+
+    }
+}
+
+
  return(
     <Layout className="min-h-screen!">
 
@@ -93,7 +101,7 @@ className="rounded-full mx-auto my-3 mb-3"
 
 </div>
 <Menu
-defaultSelectedKeys={['/app/user/dashboard']}
+defaultSelectedKeys={[pathname]}
 theme="dark"
 items={items}
 onClick={handleNavigate}
@@ -109,6 +117,8 @@ icon={<MenuOutlined/>}
 
 <Button
 icon={<LogoutOutlined/>}
+onClick={logout}
+loading={loading}
 />
     </Header>
     <Content>

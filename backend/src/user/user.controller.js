@@ -86,6 +86,22 @@ console.log(user)
     }
 }
 
+export const logout=async(req,res)=>{
+    try{
+ res.cookie('authToken',null,{
+        httpOnly:true,
+        secure:process.env.ENVIROMENT !== "DEV",
+        sameSite:process.env.ENVIROMENT === "DEV" ? "lax" :"none",
+        path:"/",
+        domain:undefined,
+        maxAge:0,
+    });
+ res.status(200).json({message: "Logout success"});
+    }catch(err){
+        res.status(401).json({message:err.message || "Logout failed"});
+    }
+}
+
 export const forgotPassword=async(req,res)=>{
     try{
 const {email}=req.body;

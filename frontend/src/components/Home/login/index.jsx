@@ -32,7 +32,7 @@ if(role=="admin")
     return toast.success("Admin try to login");
 
 if(role=="user")
-    return navigate("/app/user");
+    return navigate("/app/user/dashboard");
 
 
 console.log(data);
