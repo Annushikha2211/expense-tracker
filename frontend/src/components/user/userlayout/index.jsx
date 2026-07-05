@@ -1,6 +1,6 @@
   import {Image,Button,Layout,Menu} from "antd";
   import logo from "./one.png";
-  import {AppstoreAddOutlined,BarChartOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons";
+  import {AppstoreAddOutlined,BarChartOutlined, DollarOutlined, LogoutOutlined, MenuOutlined} from "@ant-design/icons";
   const {Sider,Header,Content,Footer} = Layout;
   import { useState } from "react";
   import { useNavigate,useLocation ,Outlet,Navigate} from "react-router-dom";
@@ -9,6 +9,7 @@
 import fetcher from "../../../utils/fetcher";
 import Loader from "../../shared/loader";
 import http from "../../../utils/http";
+import { theme } from "antd";
 
 
 
@@ -24,6 +25,12 @@ import http from "../../../utils/http";
     key:"/app/user/report",
     label:"Reports",
     icon:<BarChartOutlined/>
+},
+  
+{
+    key:"/app/user/transactions",
+    label:"Transaction",
+    icon:<DollarOutlined/>
 }
   
 ]
@@ -75,7 +82,7 @@ const logout=async()=>{
     try{
         setLoading(true);
 await http.get("/api/user/logout");
-nevigate("/")
+navigate("/")
 setLoading(false);
     }catch(err){
         setLoading(false);
@@ -84,6 +91,9 @@ setLoading(false);
     }
 }
 
+const {
+    token:{colorBgContainer,borderRadiusLG}
+} =theme.useToken();
 
  return(
     <Layout className="min-h-screen!">
@@ -121,7 +131,17 @@ onClick={logout}
 loading={loading}
 />
     </Header>
-    <Content>
+    <Content
+   style={
+    {
+    margin:'4px 8px',
+    padding:4,
+    minHeight:280,
+    background:colorBgContainer,
+    borderRadius:borderRadiusLG,
+   }
+   }
+    >
         <Outlet />
 
     {/* <h1>hjguygbhugy</h1> */}

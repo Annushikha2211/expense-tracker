@@ -30,4 +30,10 @@ app.use(express.urlencoded({extended:false}));
 
 // route level middleware
 import userRouter from "./user/user.routes.js";
-app.use("/api/user",userRouter)
+import TransactionRouter from "./transaction/transaction.router.js";
+app.use("/api/user",userRouter);
+app.use("/api/transaction",TransactionRouter);
+
+
+
+

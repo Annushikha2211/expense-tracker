@@ -88,6 +88,7 @@ console.log(user)
 
 export const logout=async(req,res)=>{
     try{
+        res.set("Cache-Control","no-store");
  res.cookie('authToken',null,{
         httpOnly:true,
         secure:process.env.ENVIROMENT !== "DEV",

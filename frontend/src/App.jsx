@@ -12,7 +12,9 @@ const Signup =lazy(()=>import("./components/Home/signup"));
 const Userlayout= lazy(()=>import("./components/user/userlayout"));
 const ForgotPassword=lazy(()=>import( "./components/Home/forgotpass"));
 const Dashboard= lazy(()=>import("./components/user/dashboard"));
-const Report= lazy(()=>import("./components/user/report"));
+const Report= lazy(()=>import("./components/user/report")); 
+const Transactions= lazy(()=>import("./components/user/dashboard/Transactions")); 
+
 
 
 const App =()=>{
@@ -36,7 +38,9 @@ const App =()=>{
      >
     
     <Route path="dashboard" element={<Dashboard/>} />   
-    <Route path="report" element={<Report/>} />    
+    <Route path="report" element={<Report/>} />  
+    <Route path="transactions" element={<Transactions/>} />  
+
     </Route>
     <Route path="/*" element={<PageNotFound/>}/>
     
