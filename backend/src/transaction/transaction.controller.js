@@ -2,8 +2,13 @@ import TransactionModel from "./transaction.model.js";
 
 export const createTransaction = async (req,res)=>{
     try{
+        const data=req.body;
+        const {id} = req.user;
+        data.userId=id;
+        const transactin= await new TransactionModel(data).save();
+        res.json(transaction)
         res.json({
-            message:"Create Requested"
+            message:" Transaction Created "
         })
 
     }catch(err){
