@@ -2,6 +2,10 @@ import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons"
 import {Card,Button,Input,Popconfirm, Table, Modal,Select, Form} from "antd";
 import { useState,useForm } from "react";
 import { toast } from "react-toastify";
+import http from "../../../../utils/http";
+import useSWR, { mutate } from "swr";
+import fetcher from "../../../../utils/fetcher";
+import { formatDate } from "../../../../../../backend/src/utils/date";
  
 
 const {Item} = Form;
@@ -55,6 +59,7 @@ const [loading,setLoading] = useState(false);
             title:"Date",
             dataIndex:"createdAt",
             key:"createdAt",
+            render:(date)=>formatDate(date)
            
         },
 
@@ -68,6 +73,7 @@ const [loading,setLoading] = useState(false);
                 title="Are you sure ?"
                 description="Once you update,You can also re-update"
                 onCancel={()=>toast.info("No change ocuur!")}
+            onConfirm={()=>onEditTransaction(obj)}
                 
                 >
                     <Button
@@ -80,7 +86,7 @@ const [loading,setLoading] = useState(false);
                 title="Are you sure ?"
                 description="Once you deleted,You can also re-store!"
                 onCancel={()=>toast.info("Your data is safe!")}
-                
+                 onConfirm={()=>onDelete(obj._id)}
                 >
                     <Button
                     type="text"
@@ -96,6 +102,65 @@ const [loading,setLoading] = useState(false);
 
 
     ]
+
+const {data:transaction,error,isLoading}=useSWR(
+    "/api/transaction/get",
+    fetcher
+)
+
+const onFinish=async(values)=>{
+try{
+    setLoading(true);
+    await http.post("/api/transaction/create",values)
+    toast.success("Transaction credited successfully");
+    mutate("/api/transaction/get");
+    setModal(false);
+    transactionForm.resetFields();
+
+}catch(err){
+    toast.error(err?.response?.data?.message||err.message);
+}finally{
+    setLoading(false);
+}
+}
+
+const onUpdate=async(values)=>{
+try{
+    setLoading(true);
+    await http.put(`/api/transaction/update/${edit._id}`,values)
+    toast.success("Transaction updated successfully");
+    mutate("/api/transaction/get");
+    setModal(false);
+    setEdit(null)
+    transactionForm.resetFields();
+
+}catch(err){
+    toast.error(err?.response?.data?.message||err.message);
+}finally{
+    setLoading(false);
+}
+}
+
+const onDelete = async (id)=>{
+    try{
+    setLoading(true);
+    await http.delete(`/api/transaction/delete/${id}`)
+    toast.success("Transaction deleted successfully");
+    mutate("/api/transaction/get");
+
+}catch(err){
+    toast.error(err?.response?.data?.message||err.message);
+}finally{
+    setLoading(false);
+}
+}
+
+const onEditTransaction=(obj)=>{
+    setEdit(obj);
+    transactionForm.setFieldValue(obj);
+    setModal(true);
+}
+
     return(
      <div>
         <div className="grid">
@@ -123,20 +188,27 @@ Add new Transaction
 
                 <Table
                 columns={columns}
-                dataSource={[{},{}]}
+                dataSource={transaction}
                 scroll={{x:"max-content"}}
+                loading={isLoading}
                 />
             </Card>
         </div>
         <Modal
         open={modal}
-        onCancel={()=>setModal(false)}
+        onCancel={()=>
+           {
+             setModal(false)
+             setEdit(null)
+             transactionForm.resetFields();
+           }}
         title="Add new Transaction"
         footer={null}
         >
 <Form
 layout="vertical"
 form={transactionForm}
+onFinish={edit? onUpdate : onFinish}
 >
 <div className="grid md:grid-cols-2 gap-x-3">
     <Item
@@ -223,8 +295,8 @@ form={transactionForm}
         loading={loading}
         type="text"
         htmlType="submit"
-        className="font-semibold! text-white! bg-blue-500!">
-            Submit
+        className={`font-semibold! text-white! ${edit?"bg-red-500!" : "bg-blue-500!"}`}>
+            {edit?"Update":"Submit"}
         </Button>
     </Item>
 

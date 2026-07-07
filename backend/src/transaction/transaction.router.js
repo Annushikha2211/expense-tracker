@@ -4,8 +4,8 @@ import { createTransaction, deleteTransaction, getTransaction, updateTransaction
 const TransactionRouter = Router();
 
 TransactionRouter.post("/create",AdminUserGuard,createTransaction);
-TransactionRouter.put("/update/:id",updateTransaction);
-TransactionRouter.delete("/delete/:id",deleteTransaction);
-TransactionRouter.get("/get",getTransaction);
+TransactionRouter.put("/update/:id",AdminUserGuard,updateTransaction);
+TransactionRouter.delete("/delete/:id",AdminUserGuard,deleteTransaction);
+TransactionRouter.get("/get",AdminUserGuard,getTransaction);
 
 export default TransactionRouter;

@@ -31,8 +31,11 @@ app.use(express.urlencoded({extended:false}));
 // route level middleware
 import userRouter from "./user/user.routes.js";
 import TransactionRouter from "./transaction/transaction.router.js";
+import DashboardRouter from "./dashboard/dashboard.route.js";
+
 app.use("/api/user",userRouter);
 app.use("/api/transaction",TransactionRouter);
+app.use("/api/dashboard",DashboardRouter);
 
 
 
