@@ -87,11 +87,11 @@ npm run dev
 
 ### Transactions
 
-![Transactions](screenshots/transactions.png)
+![Transactions](screenshots/transaction.png)
 
 ### Reports
 
-![Reports](screenshots/reports.png)
+![Reports](screenshots/report.png)
 
 ---
 
