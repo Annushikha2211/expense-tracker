@@ -2,10 +2,10 @@ import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons"
 import {Card,Button,Input,Popconfirm, Table, Modal,Select, Form} from "antd";
 import { useState,useForm } from "react";
 import { toast } from "react-toastify";
-import http from "../../../../utils/http";
+import http from "../../../utils/http";
 import useSWR, { mutate } from "swr";
-import fetcher from "../../../../utils/fetcher";
-import { formatDate } from "../../../../../../backend/src/utils/date";
+import fetcher from "../../../utils/fetcher";
+import { formatDate } from "../../../../../backend/src/utils/date";
  
 
 const {Item} = Form;
@@ -26,7 +26,20 @@ const [loading,setLoading] = useState(false);
             key:"transactionType",
             className:"capitalize"
         },
+// {
+//             title:"Mobile",
+//             dataIndex:"mobile",
+//             key:"Mobile",
+//             className:"capitalize"
+//         },
 
+//         {
+//             title:"Email",
+//             dataIndex:"email",
+//             key:"Email",
+//             className:"capitalize"
+//         },
+        
         {
             title:"Title",
             dataIndex:"title",
@@ -40,6 +53,13 @@ const [loading,setLoading] = useState(false);
             key:"amount",
             className:"capitalize"
         },
+
+        {
+    title: "Category",
+    dataIndex: "category",
+    key: "category",
+    className: "capitalize"
+},
 
          {
             title:"PaymentMethod",
@@ -155,9 +175,9 @@ const onDelete = async (id)=>{
 }
 }
 
-const onEditTransaction=(obj)=>{
+const onEditTransaction = (obj) => {
     setEdit(obj);
-    transactionForm.setFieldValue(obj);
+    transactionForm.setFieldsValue(obj);
     setModal(true);
 }
 
@@ -257,6 +277,27 @@ onFinish={edit? onUpdate : onFinish}
     </Item>
 
 <Item
+    label="Category"
+    name="category"
+    rules={[{ required: true, message: "Please select category" }]}
+>
+    <Select
+        placeholder="Select Category"
+        options={[
+            { label: "Salary", value: "salary" },
+            { label: "Food", value: "food" },
+            { label: "Shopping", value: "shopping" },
+            { label: "Travel", value: "travel" },
+            { label: "Bills", value: "bills" },
+            { label: "Medical", value: "medical" },
+            { label: "Entertainment", value: "entertainment" },
+            { label: "Other", value: "other" }
+        ]}
+    />
+</Item>
+
+
+<Item
     label="Payment Method"
     name="paymentMethod"
     rules={[{required:true}]}
@@ -306,5 +347,8 @@ onFinish={edit? onUpdate : onFinish}
      </div>
     )
 }
+
+
+
 
 export default Transactions;

@@ -28,6 +28,14 @@ amount:{
     required:true
 },
 
+category: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    required: true
+},
+
+
 paymentMethod:{
     type:String,
     trim:true,
@@ -35,12 +43,30 @@ paymentMethod:{
     required:true
 },
 
+category: {
+    type: String,
+    trim: true,
+    lowercase: true,
+    required: true
+},
+
+// date: {
+//     type: Date,
+//     default: Date.now
+// },
+
 notes:{
     type:String,
     trim:true,
     lowercase:true,
     
 },
+
+date: {
+    type: Date,
+    default: Date.now
+},
+
 
 },{timestamps:true});
 

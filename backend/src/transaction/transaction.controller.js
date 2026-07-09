@@ -21,7 +21,7 @@ export const updateTransaction = async (req,res)=>{
     try{
         const data=req.body;
         const {id}=req.params;
-        const transaction= await TransactionModel.findByIdAndUpdate(id,data,{new:true});
+        const transaction = await TransactionModel.findByIdAndUpdate(id, data, { new: true });
 if(!transaction)
     return res.status(404).json({
 message:"Transaction not found",
@@ -57,9 +57,14 @@ data:transaction})
 export const getTransaction = async (req,res)=>{
     try{
         const {id}=req.user;
-        const transactions= await TransactionModel.find({userId:id});
-        res.json(transactions);
+        const {page,limit}=req.query;
+        const skip=(page-1)*limit;
+        const transactions = await TransactionModel
+.find({ userId: id })
+.sort({ createdAt: -1 });
 
+res.json(transactions)
+.skip(skip);
     }catch(err){
         res.status(500).json({
             message:err.message|| "Internal server error.",

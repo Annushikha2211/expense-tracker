@@ -63,6 +63,8 @@ const {email,password}=req.body;
 const user=await UserModel.findOne({email});
 if(!user)
     return res.status(404).json({message:"user not define"});
+if(!user.status)
+    return res.status(404).json({message:"You are not active member"});
  const isLoged= await bcrypt.compare(password,user.password);
  if(!isLoged)
     return  res.status(404).json({message:"incorrect password"});
@@ -152,3 +154,39 @@ res.json({message:"Password updated"});
         res.status(500).json({message:err.message});
     }
 }
+
+export const getAllUsers = async (req,res)=>{
+    try{
+        
+        const users= await UserModel
+        .find().sort({createdAt:-1});
+        res.json(users);
+
+    }catch(err){
+        res.status(500).json({
+            message:err.message|| "Internal server error.",
+        })
+
+    }
+
+}
+
+
+    export const updateStatus = async (req,res)=>{
+        try{
+            const {status}=req.body;
+            const {id}=req.params;
+            const user= await UserModel.findByIdAndUpdate(id,{status},{new:true});
+    if(!user)
+        return res.status(404).json({
+    message:"User not found",
+    data:user})
+            res.json(user)
+    
+        }catch(err){
+            res.status(500).json({
+                message:err.message|| "Internal server error.",
+            })
+    
+        }
+    }

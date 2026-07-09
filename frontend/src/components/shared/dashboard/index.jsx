@@ -1,12 +1,29 @@
 import {Card,Button, Divider} from "antd";
 import { BarChartOutlined, DollarCircleFilled, DollarCircleOutlined, MinusCircleOutlined, PlusCircleOutlined } from "@ant-design/icons";
-import DailyTransactionChart from "../../shared/DailyTransactions.jsx";
+import DailyTransactionChart from "../DailyTransactions.jsx";
 import { generateFakeTransactions } from "../../../utils/fakeTransaction.js";
+import { useState } from "react";
+import { useEffect } from "react"
+import http from "../../../utils/http.js";
+import Loader from "../loader.jsx"
+
+
 
 
 const fakeTransactions = generateFakeTransactions(30);
 
 const Dashboard = () =>{
+
+const[report,setReport]=useState(null);
+useEffect(()=>{
+http.get("/api/dashboard/report")
+.then((res)=>setReport(res.data))
+.catch(console.error);
+},[]);
+
+if(!report) return <Loader/>
+const {summary,chart} = report;
+
     return(
        <div>
          <div className="grid md:grid-cols-4 gap-6">
@@ -27,7 +44,11 @@ const Dashboard = () =>{
 
 <div>
     <h1 className="text-3xl font-bold text-rose-400!">
-        100
+        {summary.totalTransaction} T
+
+        <p className="text-lg mt-1 text-zinc-400">
+            {summary.totalTransactionEstimate} Estimate
+        </p>
     </h1>
 </div>
 
@@ -53,7 +74,16 @@ const Dashboard = () =>{
 <Divider type="vertical" className="h-24" />
 
 <div>
-    <h1 className="text-3xl font-bold text-green-400!">100</h1>
+    <h1 className="text-3xl font-bold text-green-400!">
+        
+        
+        {summary.totalCredit} T
+
+        <p className="text-lg mt-1 text-zinc-400">
+            {summary.totalCreditEstimate} Estimate
+        </p>
+        
+        </h1>
 </div>
 
                 </div>
@@ -77,7 +107,11 @@ const Dashboard = () =>{
 <Divider type="vertical" className="h-24" />
 
 <div>
-    <h1 className="text-3xl font-bold text-orange-400!">100</h1>
+    <h1 className="text-3xl font-bold text-orange-400!"> {summary.totalDebit} T
+
+        <p className="text-lg mt-1 text-zinc-400">
+            {summary.totalDebitEstimate} Estimate
+        </p></h1>
 </div>
 
                 </div>
@@ -101,7 +135,11 @@ const Dashboard = () =>{
 <Divider type="vertical" className="h-24" />
 
 <div>
-    <h1 className="text-3xl font-bold text-purple-400!">100</h1>
+    <h1 className="text-3xl font-bold text-purple-400!"> {summary.balance} T
+
+        <p className="text-lg mt-1 text-zinc-400">
+            {summary.balanceEstimate} Estimate
+        </p></h1>
 </div>
 
                 </div>
@@ -112,7 +150,7 @@ const Dashboard = () =>{
         </div>
 
         <div className="hidden md:block mt-5 grid md:grid-cols-1">
-            <DailyTransactionChart transactions={fakeTransactions}/>
+            <DailyTransactionChart transactions={chart}/>
         </div>
        </div>
     )
