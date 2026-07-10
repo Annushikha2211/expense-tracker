@@ -12,7 +12,7 @@ const Homepage= lazy(()=>import("./components/Home"));
 const Login =lazy(()=>import("./components/Home/login"));
 const Signup =lazy(()=>import("./components/Home/signup"));
 
-const Userlayout= lazy(()=>import("./components/user/userlayout"));
+const Userlayout= lazy(()=>import("./components/Users/userlayout"));
 const ForgotPassword=lazy(()=>import( "./components/Home/forgotpass"));
 const ChangePassword=lazy(()=>import( "./components/Home/changepass"));
 
