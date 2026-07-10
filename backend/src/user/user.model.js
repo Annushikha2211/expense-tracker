@@ -46,7 +46,7 @@ otpExpiry: {
     type: Date
 },
 
-},{timestamp:true});
+},{timestamps:true});
 
 userSchema.pre('save', async function(){
     const hashedPass =await bcrypt.hash(this.password.toString(),12);

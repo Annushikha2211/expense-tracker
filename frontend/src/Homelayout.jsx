@@ -31,10 +31,10 @@ const HomeLayout = ({children})=>{
         {children}
     </Content>
 
-    <footer className=" bg-[#869eca] p-8 text-center text-white">
+    <footer className=" bg-[#869eca] p-1 text-center text-white">
         
-        <h1 className='text-white text-lg md:text-3xl font-bold text-center'>
-    Footer
+        <h1 className='text-white text-lg  font-bold text-center'>
+    
 </h1>
 
     </footer>

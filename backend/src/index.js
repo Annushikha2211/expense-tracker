@@ -24,7 +24,7 @@ app.use(cookieParser());
 import morgan from "morgan";
 app.use(morgan('dev'));
 
-app.use(express.json());
+// app.use(express.json());
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
