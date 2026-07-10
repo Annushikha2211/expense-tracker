@@ -18,45 +18,75 @@ const [formData,setFormData]=useState(null);
 const [otp,setOtp]=useState(null);
 const [loading,setLoading]=useState(false);
 
-
-const onFinish=async(values)=>{
-    try{
-         setLoading(true);
-const{data}=await http.post("/api/user/send-mail",values);
-console.log("API RESPONSE:",data)
-setOtp(data.otp);
-setFormData(values);
-
-    }catch(err){
-toast.error(err.response?err.response.data.message:err.message);
-        setOtp(null);
-        setFormData(null)
-    
-
-    }finally{
-        setLoading(false);
-    }
-}
-
-
-const onSignup=async(values)=>{
-    try{
+const onFinish = async (values) => {
+    try {
         setLoading(true);
- if (Number(values.otp)!==Number(otp))
-    return toast.error("OTP not match");
-
-await http.post("/api/user/signup",formData);
-setOtp(null);
-setFormData(null);
-// signupForm.resetFields();
-    
-    }catch(err){
-        toast.error(err.response?err.response.data.message:err.message);
-
-    }finally{
+        const { data } = await http.post("/api/user/send-mail", values);
+        setFormData(values);
+        setOtp(true); // sirf OTP form dikhane ke liye flag, actual otp nahi
+    } catch (err) {
+        toast.error(err.response ? err.response.data.message : err.message);
+        setOtp(null);
+        setFormData(null);
+    } finally {
         setLoading(false);
     }
 }
+
+// const onFinish=async(values)=>{
+//     try{
+//          setLoading(true);
+// const{data}=await http.post("/api/user/send-mail",values);
+// console.log("API RESPONSE:",data)
+// setOtp(data.otp);
+// setFormData(values);
+
+//     }catch(err){
+// toast.error(err.response?err.response.data.message:err.message);
+//         setOtp(null);
+//         setFormData(null)
+    
+
+//     }finally{
+//         setLoading(false);
+//     }
+// }
+
+const onSignup = async (values) => {
+    try {
+        setLoading(true);
+        await http.post("/api/user/verify-token", {
+            email: formData.email,
+            otp: values.otp
+        });
+        toast.success("Signup successful!");
+        setOtp(null);
+        setFormData(null);
+    } catch (err) {
+        toast.error(err.response ? err.response.data.message : err.message);
+    } finally {
+        setLoading(false);
+    }
+}
+
+// const onSignup=async(values)=>{
+//     try{
+//         setLoading(true);
+//  if (Number(values.otp)!==Number(otp))
+//     return toast.error("OTP not match");
+
+// await http.post("/api/user/signup",formData);
+// setOtp(null);
+// setFormData(null);
+// // signupForm.resetFields();
+    
+//     }catch(err){
+//         toast.error(err.response?err.response.data.message:err.message);
+
+//     }finally{
+//         setLoading(false);
+//     }
+// }
 
     return(
         

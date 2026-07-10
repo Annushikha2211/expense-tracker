@@ -36,7 +36,15 @@ role:{
     type:String,
     default:"user",
     enum:['user']
-}
+},
+
+
+otp: {
+    type: String
+},
+otpExpiry: {
+    type: Date
+},
 
 },{timestamp:true});
 

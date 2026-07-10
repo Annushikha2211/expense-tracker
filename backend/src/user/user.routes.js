@@ -13,7 +13,8 @@ userRouter.get("/get",AdminGuard ,getAllUsers);
 userRouter.put("/status/:id",AdminGuard ,updateStatus);
 userRouter.post("/send-mail",sendEmail);
 userRouter.post("/forgot-password",forgotPassword);
-userRouter.post("/verify-token",verifyTokenGuard,verifyToken);
+// userRouter.post("/verify-token",verifyTokenGuard,verifyToken);
+userRouter.post("/verify-token",verifyToken);
 userRouter.put("/change-password",verifyTokenGuard,changePassword);
 userRouter.get("/session",AdminUserGuard,(req,res)=>{
     return res.json(req.user);

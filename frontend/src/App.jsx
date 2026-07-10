@@ -11,8 +11,11 @@ const PageNotFound = lazy(()=>import("./components/pagenotfound"));
 const Homepage= lazy(()=>import("./components/Home"));
 const Login =lazy(()=>import("./components/Home/login"));
 const Signup =lazy(()=>import("./components/Home/signup"));
+
 const Userlayout= lazy(()=>import("./components/user/userlayout"));
 const ForgotPassword=lazy(()=>import( "./components/Home/forgotpass"));
+const ChangePassword=lazy(()=>import( "./components/Home/changepass"));
+
 const Dashboard= lazy(()=>import("./components/shared/dashboard"));
 const Report= lazy(()=>import("./components/shared/report")); 
 const Transactions= lazy(()=>import("./components/shared/Transactions")); 
@@ -27,9 +30,10 @@ const App =()=>{
    <Suspense fallback={<Loader/>}>
    <Routes>
     <Route path="/" element={<Homepage/>}/>
-    <Route path="/" element={<Login/>}/>
+    <Route path="/login" element={<Login/>}/>
     <Route path="/signup" element={<Signup/>}/>
     <Route path="/forgot-password" element={<ForgotPassword/>}/>
+    <Route path="/change-password" element={<ChangePassword />} />
 {/* admin releted */}
     <Route path="/app/admin" 
     element={<Guard

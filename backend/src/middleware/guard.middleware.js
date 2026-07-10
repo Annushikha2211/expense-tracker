@@ -4,7 +4,7 @@ export const verifyTokenGuard = async (req,res,next) =>{
     const authorization = req.headers['authorization'];
     if(!authorization)
         return res.status(400).send("Bad request");
-    const[type,token]=authorization.split("");
+    const[type,token]=authorization.split(" ");
      
     if(type!=="Bearer")
         return res.status(400).send("Bad request");

@@ -18,33 +18,67 @@ res.json(user);
         res.status(500).json({message:err.message});
     }
 }
+// export const sendEmail =async(req,res)=>{
+//     try{  
+
+// // const isEmail = await UserModel.findOne({email});
+// // if(!isEmail) return res.status(400).json({message:"User not registered"}); // ya jo bhi logic ho
+// // isEmail.otp = OTP;
+// // isEmail.otpExpiry = Date.now() + 10*60*1000; // 10 min
+// // await isEmail.save();
 
 
-export const sendEmail =async(req,res)=>{
-    try{  
-const {email}=req.body;
-const OTP=generateOTP();
-const isEmail=await UserModel.findOne({email});
-if(isEmail)
-    return res.status(400).json({message:"Already rsgistersd !"});
+// const {email}=req.body;
+// const OTP=generateOTP();
+// const isEmail=await UserModel.findOne({email});
+// // if(isEmail)
+// //     return res.status(400).json({message:"Already rsgistersd !"});
 
+// if(!isEmail) return res.status(400).json({message:"User not registered"}); // ya jo bhi logic ho
+// isEmail.otp = OTP;
+// isEmail.otpExpiry = Date.now() + 10*60*1000; // 10 min
+// await isEmail.save();
 
-        await sendMail(email,"OTP For Signup",otpTemplate(OTP))
+//         await sendMail(email,"OTP For Signup",otpTemplate(OTP))
 
-        res.json(
-            {message:"Email sent successfully",
-            otp : OTP,
-            success:true
-            }
-        );
-    }catch(err){
-        console.log("controller err",err);
-        res.status(500).json({message:"err.message"});
+//         res.json(
+//             {message:"Email sent successfully",
+//             otp : OTP,
+//             success:true
+//             }
+//         );
+//     }catch(err){
+//         console.log("controller err",err);
+//         res.status(500).json({message:"err.message"});
+//     }
+// }
+
+export const sendEmail = async (req, res) => {
+    try {
+        const { fullname, mobile, email, password } = req.body;
+        const isEmail = await UserModel.findOne({ email });
+        if (isEmail) return res.status(400).json({ message: "Already registered!" });
+
+        const OTP = generateOTP();
+        const user = new UserModel({
+            fullname,
+            mobile,
+            email,
+            password,
+            otp: OTP,
+            otpExpiry: Date.now() + 10 * 60 * 1000, // 10 min
+            status: false
+        });
+        await user.save();
+
+        await sendMail(email, "OTP For Signup", otpTemplate(OTP));
+
+        res.json({ message: "Email sent successfully", success: true });
+    } catch (err) {
+        console.log("controller err", err);
+        res.status(500).json({ message: err.message });
     }
 }
-
-
-
 
 const createToken=async(user)=>{
     const payload ={
@@ -87,7 +121,6 @@ console.log(user)
         res.status(500).json({message:err.message});
     }
 }
-
 export const logout=async(req,res)=>{
     try{
         res.set("Cache-Control","no-store");
@@ -104,7 +137,6 @@ export const logout=async(req,res)=>{
         res.status(401).json({message:err.message || "Logout failed"});
     }
 }
-
 export const forgotPassword=async(req,res)=>{
     try{
 const {email}=req.body;
@@ -112,7 +144,7 @@ const user=await UserModel.findOne({email})
 if(!user)
     return res.status(404).json({message:'User doesn`t exists'});
 const token =await jwt.sign({id:user._id},process.env.FORGOT_TOKEN_SECRET,{expiresIn:"15m"});
-const link=`${process.env.DOMAIN}/forgot-password?token=${token}`;
+const link=`${process.env.DOMAIN}/change-password?token=${token}`;
 const sent=await sendMail(
     email,
     "Expense - forgot Password ?",
@@ -131,17 +163,36 @@ console.log(token);
     }
 }
 
+export const verifyToken = async (req, res) => {
+    try {
+        const { email, otp } = req.body;
+        const user = await UserModel.findOne({ email });
+        if (!user) return res.status(404).json({ message: "User not found" });
 
+        if (user.otp !== String(otp) || Date.now() > user.otpExpiry) {
+            return res.status(400).json({ message: "Invalid or expired OTP" });
+        }
 
-export const verifyToken=async(req,res)=>{
-    try{
+        user.status = true;
+        user.otp = undefined;
+        user.otpExpiry = undefined;
+        await user.save();
 
-res.json({message:"Veerification Success"});
-
-    }catch(err){
-        res.status(500).json({message:err.message});
+        res.json({ message: "Verification Success" });
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 }
+
+// export const verifyToken=async(req,res)=>{
+//     try{
+
+// res.json({message:"Veerification Success"});
+
+//     }catch(err){
+//         res.status(500).json({message:err.message});
+//     }
+// }
 
 export const changePassword=async(req,res)=>{
     try{
