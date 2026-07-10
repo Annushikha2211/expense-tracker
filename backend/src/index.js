@@ -39,6 +39,10 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 
+app.get("/", (req, res) => {
+    res.send("Expense Tracker Backend is running!");
+});
+
 // route level middleware
 import userRouter from "./user/user.routes.js";
 import TransactionRouter from "./transaction/transaction.router.js";
