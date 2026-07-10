@@ -19,7 +19,7 @@ const ChangePassword=lazy(()=>import( "./components/Home/changepass"));
 const Dashboard= lazy(()=>import("./components/shared/dashboard"));
 const Report= lazy(()=>import("./components/shared/report")); 
 const Transactions= lazy(()=>import("./components/shared/Transactions")); 
-const Users =lazy(()=>import("./components/shared/users")) ;
+const Users =lazy(()=>import("./components/shared/user")) ;
 
 
 
