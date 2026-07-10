@@ -8,8 +8,12 @@ const app = express();
 
 app.use(cors({
     origin: [
-        "https://expense-tracker-annushikha.vercel.app",
-        "https://expense-tracker-5brkye3bn-annushikha.vercel.app"
+        // "https://expense-tracker-annushikha.vercel.app",
+        // "https://expense-tracker-5brkye3bn-annushikha.vercel.app"
+
+         "https://expense-tracker-annushikha.vercel.app",
+        "https://expense-tracker-5brkye3bn-annushikha.vercel.app",
+        "https://expense-tracker-mu-lemon-61.vercel.app"
     ],
     credentials: true
 }));
