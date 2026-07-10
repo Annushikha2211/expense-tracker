@@ -1,6 +1,10 @@
 import express from "express";
 
 import cors from 'cors';
+import dotenv from "dotenv";
+dotenv.config();
+
+const app = express();
 
 app.use(cors({
     origin: [
@@ -10,17 +14,13 @@ app.use(cors({
     credentials: true
 }));
 
-import dotenv from "dotenv";
-dotenv.config();
 
-const app = express();
-app.listen(3000,()=>console.log("Server is running on port 3000"));
 
 // database connection
 import mongoose from "mongoose";
 mongoose.connect(process.env.DB_URL)
 .then(()=>console.log("database connected!"))
-.catch(()=>console.log("database not connected!"));
+.catch((err)=>console.log("database not connected!", err));
 
 // import cors from 'cors';
 // app.use(cors({
@@ -48,6 +48,11 @@ app.use("/api/user",userRouter);
 app.use("/api/transaction",TransactionRouter);
 app.use("/api/dashboard",DashboardRouter);
 
+//   app.listen(3000,()=>console.log("Server is running on port 3000"));
 
+const PORT = process.env.PORT || 3000;
 
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
 
