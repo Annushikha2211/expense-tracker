@@ -1,4 +1,15 @@
 import express from "express";
+
+import cors from 'cors';
+
+app.use(cors({
+    origin: [
+        "https://expense-tracker-annushikha.vercel.app",
+        "https://expense-tracker-5brkye3bn-annushikha.vercel.app"
+    ],
+    credentials: true
+}));
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -11,11 +22,11 @@ mongoose.connect(process.env.DB_URL)
 .then(()=>console.log("database connected!"))
 .catch(()=>console.log("database not connected!"));
 
-import cors from 'cors';
-app.use(cors({
-    origin:process.env.DOMAIN,
-    credentials:true
-}))
+// import cors from 'cors';
+// app.use(cors({
+//     origin:process.env.DOMAIN,
+//     credentials:true
+// }))
 
 import cookieParser from 'cookie-parser';
 app.use(cookieParser());
